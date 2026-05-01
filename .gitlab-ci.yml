@@ -3,18 +3,13 @@ stages:
   - deploy
 
 variables:
-  DOCKER_HOST: tcp://docker:2376
-  DOCKER_TLS_CERTDIR: "/certs"
-  # These variables should be set in GitLab Group/Project CI/CD Settings:
-  # DOCKERHUB_USERNAME
-  # DOCKERHUB_TOKEN
+  # Use the host docker socket
+  DOCKER_HOST: unix:///var/run/docker.sock
   IMAGE_NAME: $DOCKERHUB_USERNAME/php56-for-typo3v4.x
 
 build-and-test:
   stage: build-test
-  image: docker:24-dind
-  services:
-    - docker:24-dind
+  image: docker:24.0.5
   before_script:
     - apk add --no-cache make bash
   script:
@@ -32,9 +27,7 @@ build-and-test:
 
 push-to-dockerhub:
   stage: deploy
-  image: docker:24-dind
-  services:
-    - docker:24-dind
+  image: docker:24.0.5
   before_script:
     - docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_TOKEN"
   script:
