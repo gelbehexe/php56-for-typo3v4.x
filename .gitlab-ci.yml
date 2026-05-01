@@ -37,12 +37,16 @@ push-to-dockerhub:
   rules:
     - if: $CI_COMMIT_TAG =~ /^v.*$/
 
-update_dockerhub_readme:
+update-dockerhub-readme:
   stage: deploy
-  image: chko/docker-pushrm:1
+  image:
+    name: chko/docker-pushrm:1
+    entrypoint: [""]
+  variables:
+    DOCKER_USER: $DOCKERHUB_USERNAME
+    DOCKER_PASS: $DOCKERHUB_TOKEN
   script:
-    - echo "Pushing README for docker.io/$IMAGE_NAME"
-    - DOCKER_USER="$DOCKERHUB_USERNAME" DOCKER_PASS="$DOCKERHUB_TOKEN" /docker-pushrm "docker.io/$IMAGE_NAME"
+    - /docker-pushrm "$IMAGE_NAME"
   rules:
     - if: $CI_COMMIT_TAG =~ /^v.*$/
     - if: $CI_PIPELINE_SOURCE == "web"
