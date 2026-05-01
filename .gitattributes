@@ -3,9 +3,10 @@ tests/ export-ignore
 Build/ export-ignore
 build/ export-ignore
 Makefile export-ignore
+.gitlab-ci.yml export-ignore
+.github/workflows/docker.yml.disabled export-ignore
 .gitattributes export-ignore
 .travis.yml export-ignore
-.gitlab-ci.yml export-ignore
 .gitignore export-ignore
 .env export-ignore
 .env.nginx-proxy export-ignore

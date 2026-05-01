@@ -42,3 +42,16 @@ The `entrypoint.sh` supports the following variables for the initial admin user:
 - `TYPO3_INITIAL_ADMIN_UID`: Defaults to `1`. 
   - Set to `auto` to let MySQL handle the UID (auto-increment).
   - If a numeric UID is provided, the script verifies it is not already taken before creation.
+
+## CI/CD Setup
+
+To enable automated builds and pushes to Docker Hub, you need to configure the following secrets/variables in your CI environment (GitHub Secrets or GitLab CI/CD Variables):
+
+- `DOCKERHUB_USERNAME`: Your Docker Hub username.
+- `DOCKERHUB_TOKEN`: A Personal Access Token (PAT) from Docker Hub.
+
+### Creating a Docker Hub Token
+
+1. Go to **Account Settings** > **Security** > **Personal Access Tokens** on Docker Hub.
+2. Generate a new token with **Read & Write** permissions.
+3. Use this token as the value for `DOCKERHUB_TOKEN`.

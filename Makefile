@@ -1,6 +1,10 @@
 .PHONY: build test all
 
-IMAGE_NAME = gelbehexe/php56-for-typo3v4.x
+# Default values for Docker Hub
+DOCKER_USER ?= gelbehexe
+REPO_NAME ?= php56-for-typo3v4.x
+
+IMAGE_NAME = $(DOCKER_USER)/$(REPO_NAME)
 ALT_NAME = testimage
 
 all: build test
