@@ -34,6 +34,10 @@ jobs:
 
       - name: Build and test
         run: make all
+        env:
+          TYPO3_INITIAL_ADMIN_PASSWORD: "ci-test-password"
+          TYPO3_INITIAL_ADMIN_USERNAME: "ci_admin"
+          TYPO3_INITIAL_ADMIN_UID: "auto"
 
       - name: Login to Docker Hub
         if: startsWith(github.ref, 'refs/tags/')
