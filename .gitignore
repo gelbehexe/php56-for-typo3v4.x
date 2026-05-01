@@ -1,0 +1,52 @@
+# IDE
+.idea/*
+!.idea/deployment.xml
+*.iml
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# Environment
+.env
+.env.disabled
+.env.nginx-proxy
+
+# App content
+app_data/fileadmin/_processed_/
+app_data/fileadmin/_temp_/
+app_data/uploads/
+
+# TYPO3 generated files
+app_data/typo3conf/temp_CACHED_*.php
+/app_data/typo3conf/ENABLE_INSTALL_TOOL
+
+# TYPO3 app — generated/large
+docker/app/shared/typo3/vendor/
+docker/app/shared/typo3/var/*
+!docker/app/shared/typo3/var/labels
+docker/app/shared/typo3/public/*
+!docker/app/shared/typo3/public/.htaccess
+!docker/app/shared/typo3/public/index.php
+!docker/app/shared/typo3/public/typo3conf
+docker/app/shared/typo3/public/typo3conf/*
+!docker/app/shared/typo3/public/typo3conf/LocalConfiguration.php
+!docker/app/shared/typo3/public/typo3conf/AdditionalConfiguration.php
+
+# DB dump — potentially sensitive/large
+docker/db/files/clean-dump.sql
+docker/db/files/clean-dump.sql.gz
+docker/db/files/dump.sql
+
+# Temp
+tmp/
