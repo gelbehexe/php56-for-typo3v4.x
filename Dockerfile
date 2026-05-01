@@ -22,6 +22,7 @@ RUN sleep 0 \
     && sleep 0
 #    && rm -rf /var/lib/apt/lists/*
 #
+COPY conf/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY conf/typo3.ini /usr/local/etc/php/conf.d/typo3.ini
 COPY files/msmtprc.template /etc/msmtprc.template
 COPY files/entrypoint.sh /usr/local/bin/custom-entrypoint.sh

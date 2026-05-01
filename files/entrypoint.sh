@@ -43,7 +43,9 @@ if [ -n "$APPLICATION_GID" ] && [ "$APPLICATION_GID" != "$(id -g www-data)" ]; t
     groupmod -g "$APPLICATION_GID" www-data
 fi
 
-chown -R www-data:www-data /app/typo3temp
+if [ -d /app/typo3temp ]; then
+    chown -R www-data:www-data /app/typo3temp
+fi
 
 if [ "${PHP_DISPLAY_ERRORS:-0}" = "1" ]; then
     echo "display_errors = On" > /usr/local/etc/php/conf.d/display-errors.ini
@@ -65,7 +67,7 @@ rm -f /tmp/msmtp-logpipe
 mkfifo -m 620 /tmp/msmtp-logpipe
 chown root:www-data /tmp/msmtp-logpipe
 cat < /tmp/msmtp-logpipe 1>&2 &
-LOGPIPE_PID=$!
+MAILER_LOGPIPE_PID=$!
 exec 3>/tmp/msmtp-logpipe
 
 rm -f /tmp/php-logpipe
@@ -79,7 +81,7 @@ if [ "${ENABLE_TYPO3_INSTALL_PERMANT:-0}" = "1" ]; then
   INSTALL_TOOL_PID=$!
 fi
 
-trap 'kill $LOGPIPE_PID $PHP_LOGPIPE_PID ${INSTALL_TOOL_PID:-} 2>/dev/null' EXIT TERM INT
+trap 'kill $MAILER_LOGPIPE_PID $PHP_LOGPIPE_PID ${INSTALL_TOOL_PID:-} 2>/dev/null' EXIT TERM INT
 
 echo "sendmail_path = /usr/bin/msmtp -C /etc/msmtprc -t" > /usr/local/etc/php/conf.d/mail.ini
 echo "log_errors = On" > /usr/local/etc/php/conf.d/error-log.ini

@@ -1,5 +1,8 @@
 Tests/ export-ignore
+tests/ export-ignore
 Build/ export-ignore
+build/ export-ignore
+Makefile export-ignore
 .gitattributes export-ignore
 .travis.yml export-ignore
 .gitlab-ci.yml export-ignore
