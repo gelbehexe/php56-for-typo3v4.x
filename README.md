@@ -71,4 +71,4 @@ services:
       SMTP_PASSWORD: ""
       PHP_DISPLAY_ERRORS: 1
 ```
-For information on how to build and test the image locally, please see [DEVELOPMENT.md](DEVELOPMENT.md).
+For information on how to build and test the image locally, please see [DEVELOPMENT.md](https://github.com/gelbehexe/php56-for-typo3v4.x/blob/main/DEVELOPMENT.md).

@@ -1,0 +1,40 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: gelbehexe/php56-for-typo3v4.x
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and test
+        run: make all
+        env:
+          TYPO3_INITIAL_ADMIN_PASSWORD: "ci-test-password"
+          TYPO3_INITIAL_ADMIN_USERNAME: "ci_admin"
+          TYPO3_INITIAL_ADMIN_UID: "auto"
