@@ -38,7 +38,9 @@ Based on `php:5.6-fpm-stretch`.
 | `MYSQL_USER`                   | MySQL user                                                           |
 | `MYSQL_PASSWORD`               | MySQL password                                                       |
 | `MYSQL_DATABASE`               | MySQL database name                                                  |
+| `TYPO3_INITIAL_ADMIN_USERNAME` | Username for the initial admin user (default: `admin`)        |
 | `TYPO3_INITIAL_ADMIN_PASSWORD` | If set, creates a TYPO3 backend admin user on first start            |
+| `TYPO3_INITIAL_ADMIN_UID`      | UID for the initial admin user (default: `1`, set to `auto` for AI)  |
 | `TYPO3_INITIAL_ADMIN_EMAIL`    | Email address for the initial admin user                             |
 | `ENABLE_TYPO3_INSTALL_PERMANT` | Set to `1` to keep the TYPO3 Install Tool permanently enabled        |
 | `SMTP_HOST`                    | SMTP server hostname                                                 |

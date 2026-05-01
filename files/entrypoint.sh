@@ -7,29 +7,57 @@ create_typo3_admin() {
     return 0
   fi
 
+  local ADMIN_USER="${TYPO3_INITIAL_ADMIN_USERNAME:-admin}"
+  local ADMIN_UID_VAR="${TYPO3_INITIAL_ADMIN_UID:-1}"
+  local ADMIN_UID_VAL
+
   echo "Waiting for be_users table..."
   for i in $(seq 1 60); do
     if mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" "${MYSQL_DATABASE}" \
         -e "SHOW TABLES LIKE 'be_users';" 2>/dev/null | grep -q be_users; then
       break
     fi
+    if [ $i -eq 60 ]; then
+      echo "ERROR: Table 'be_users' not found after 60 attempts. Check database initialization."
+      return 1
+    fi
     echo "  attempt $i/60, retrying..."
     sleep 2
   done
 
   EXISTS=$(mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" "${MYSQL_DATABASE}" \
-    -sN -e "SELECT COUNT(*) FROM be_users WHERE username='admin' AND deleted=0;" 2>/dev/null)
+    -sN -e "SELECT COUNT(*) FROM be_users WHERE username='${ADMIN_USER}' AND deleted=0;")
 
   if [ "${EXISTS:-0}" -eq 0 ]; then
-    HASH="$(php -r "echo md5('${TYPO3_INITIAL_ADMIN_PASSWORD}');")"
-    TSTAMP="$(php -r "echo time();")"
-    mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" "${MYSQL_DATABASE}" 2>/dev/null <<SQL
+    # UID Logic
+    if [ "$ADMIN_UID_VAR" = "auto" ]; then
+        ADMIN_UID_VAL="NULL"
+    else
+        # Verify if UID is already taken
+        UID_EXISTS=$(mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" "${MYSQL_DATABASE}" \
+            -sN -e "SELECT COUNT(*) FROM be_users WHERE uid='${ADMIN_UID_VAR}';" 2>/dev/null)
+        if [ "${UID_EXISTS:-0}" -gt 0 ]; then
+            echo "ERROR: Cannot create admin user '${ADMIN_USER}'. UID ${ADMIN_UID_VAR} is already taken."
+            return 1
+        fi
+        ADMIN_UID_VAL="'${ADMIN_UID_VAR}'"
+    fi
+
+    echo "Creating admin user '${ADMIN_USER}'..."
+    HASH=$(php -r "echo md5('${TYPO3_INITIAL_ADMIN_PASSWORD}');")
+    TSTAMP=$(php -r "echo time();")
+    if mysql -h"${MYSQL_HOST}" -u"${MYSQL_USER}" -p"${MYSQL_PASSWORD}" "${MYSQL_DATABASE}" <<SQL
 INSERT INTO be_users (uid,pid,username,password,admin,disable,deleted,realName,email,TSconfig,tstamp,crdate)
-VALUES (1,0,'admin','${HASH}',1,0,0,'Dev Admin','${TYPO3_INITIAL_ADMIN_EMAIL}','${TYPO3_INITIAL_ADMIN_OPTIONS}','${TSTAMP}','${TSTAMP}');
+VALUES (${ADMIN_UID_VAL},0,'${ADMIN_USER}','${HASH}',1,0,0,'Dev Admin','${TYPO3_INITIAL_ADMIN_EMAIL}','${TYPO3_INITIAL_ADMIN_OPTIONS}','${TSTAMP}','${TSTAMP}');
 SQL
-    echo "Admin user created."
+    then
+      echo "SUCCESS: Admin user '${ADMIN_USER}' (UID: ${ADMIN_UID_VAR}) created."
+    else
+      echo "ERROR: Failed to create admin user."
+      return 1
+    fi
   else
-    echo "Admin user already exists."
+    echo "INFO: Admin user '${ADMIN_USER}' already exists."
   fi
 }
 
